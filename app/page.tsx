@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { allTopics, modules, type Level } from "./topics";
 import { interviewQuestions, questionCategories } from "./questions";
+import { getAnswer } from "./answers";
 
 const levelOptions: Array<"Все" | Level> = ["Все", "Основа", "Middle", "Senior"];
 
@@ -20,6 +21,7 @@ export default function Home() {
   const [completed, setCompleted] = useState<string[]>([]);
   const [expandedModules, setExpandedModules] = useState<string[]>(modules.map((module) => module.id));
   const [practiceIndex, setPracticeIndex] = useState<number | null>(null);
+  const [answerVisible, setAnswerVisible] = useState(false);
   const [visibleCount, setVisibleCount] = useState(40);
 
   useEffect(() => {
@@ -61,6 +63,12 @@ export default function Home() {
 
   const progress = Math.round((completed.length / allTopics.length) * 100);
   const currentQuestion = practiceIndex === null ? null : interviewQuestions[practiceIndex % interviewQuestions.length];
+  const currentAnswer = currentQuestion ? getAnswer(currentQuestion) : null;
+
+  const openQuestion = (index: number) => {
+    setPracticeIndex(index);
+    setAnswerVisible(false);
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-950">
@@ -82,7 +90,7 @@ export default function Home() {
           </div>
 
           <button
-            onClick={() => setPracticeIndex(Math.floor(Math.random() * interviewQuestions.length))}
+            onClick={() => openQuestion(Math.floor(Math.random() * interviewQuestions.length))}
             className="hidden h-10 shrink-0 items-center rounded-lg bg-slate-950 px-4 text-sm font-medium text-white hover:bg-slate-800 sm:flex"
           >
             Практика
@@ -194,7 +202,7 @@ export default function Home() {
                               <button
                                 onClick={() => {
                                   const question = interviewQuestions.findIndex((item) => item.category.toLowerCase().includes(module.title.split(" ")[0].toLowerCase()));
-                                  setPracticeIndex(question >= 0 ? question : Math.floor(Math.random() * interviewQuestions.length));
+                                  openQuestion(question >= 0 ? question : Math.floor(Math.random() * interviewQuestions.length));
                                 }}
                                 className="shrink-0 rounded-md border border-slate-200 px-2.5 py-1.5 text-xs text-slate-600 hover:bg-slate-50"
                               >Вопрос</button>
@@ -230,14 +238,14 @@ export default function Home() {
 
               <div className="mb-3 flex items-center justify-between text-xs text-slate-500">
                 <span>Найдено: {filteredQuestions.length}</span>
-                <span>Нажмите на вопрос для практики</span>
+                <span>У каждого вопроса есть ответ</span>
               </div>
 
               <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
                 {filteredQuestions.slice(0, visibleCount).map((item, index) => (
                   <button
                     key={item.id}
-                    onClick={() => setPracticeIndex(interviewQuestions.findIndex((question) => question.id === item.id))}
+                    onClick={() => openQuestion(interviewQuestions.findIndex((question) => question.id === item.id))}
                     className="grid w-full grid-cols-[32px_minmax(0,1fr)] gap-3 border-b border-slate-100 px-4 py-3 text-left last:border-b-0 hover:bg-slate-50 sm:grid-cols-[40px_minmax(0,1fr)_auto_auto] sm:items-center sm:px-5"
                   >
                     <span className="font-mono text-xs text-slate-400">{String(index + 1).padStart(2, "0")}</span>
@@ -260,7 +268,7 @@ export default function Home() {
 
       {currentQuestion && (
         <div className="fixed inset-0 z-50 grid place-items-center bg-slate-950/50 p-4 backdrop-blur-sm" onMouseDown={() => setPracticeIndex(null)}>
-          <article className="w-full max-w-2xl rounded-2xl border border-slate-200 bg-white p-5 shadow-2xl sm:p-7" onMouseDown={(event) => event.stopPropagation()} role="dialog" aria-modal="true">
+          <article className="max-h-[92vh] w-full max-w-3xl overflow-y-auto rounded-2xl border border-slate-200 bg-white p-5 shadow-2xl sm:p-7" onMouseDown={(event) => event.stopPropagation()} role="dialog" aria-modal="true">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <div className="mb-3 flex items-center gap-2">
@@ -284,9 +292,51 @@ export default function Home() {
               </ol>
             </div>
 
+            {answerVisible && currentAnswer ? (
+              <section className="mb-6 overflow-hidden rounded-xl border border-emerald-200 bg-emerald-50/50" aria-label="Ответ">
+                <div className="border-b border-emerald-200 bg-emerald-100/60 px-4 py-3">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-emerald-800">Ответ</p>
+                </div>
+                <div className="space-y-5 p-4 sm:p-5">
+                  <div>
+                    <h3 className="mb-1.5 text-xs font-semibold text-slate-500">Кратко</h3>
+                    <p className="text-sm font-medium leading-6 text-slate-900">{currentAnswer.short}</p>
+                  </div>
+                  <div>
+                    <h3 className="mb-2 text-xs font-semibold text-slate-500">Что раскрыть</h3>
+                    <ul className="space-y-2">
+                      {currentAnswer.points.map((point) => (
+                        <li key={point} className="flex gap-2 text-sm leading-6 text-slate-700">
+                          <span className="mt-2 size-1.5 shrink-0 rounded-full bg-emerald-500" />
+                          {point}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="rounded-lg border border-slate-200 bg-white p-3">
+                      <h3 className="mb-1 text-xs font-semibold text-slate-500">Пример</h3>
+                      <p className="text-sm leading-6 text-slate-700">{currentAnswer.example}</p>
+                    </div>
+                    <div className="rounded-lg border border-amber-200 bg-amber-50 p-3">
+                      <h3 className="mb-1 text-xs font-semibold text-amber-700">Важно</h3>
+                      <p className="text-sm leading-6 text-slate-700">{currentAnswer.caveat}</p>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            ) : (
+              <button
+                onClick={() => setAnswerVisible(true)}
+                className="mb-6 w-full rounded-xl border border-emerald-600 bg-emerald-600 px-4 py-3 text-sm font-semibold text-white hover:bg-emerald-700"
+              >
+                Показать ответ
+              </button>
+            )}
+
             <div className="flex justify-end gap-2">
               <button onClick={() => setPracticeIndex(null)} className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium hover:bg-slate-50">Закрыть</button>
-              <button onClick={() => setPracticeIndex(Math.floor(Math.random() * interviewQuestions.length))} className="rounded-lg bg-slate-950 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800">Следующий вопрос</button>
+              <button onClick={() => openQuestion(Math.floor(Math.random() * interviewQuestions.length))} className="rounded-lg bg-slate-950 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800">Следующий вопрос</button>
             </div>
           </article>
         </div>
