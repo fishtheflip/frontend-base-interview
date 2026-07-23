@@ -20,7 +20,6 @@ export default function Home() {
   const [level, setLevel] = useState<"Все" | Level>("Все");
   const [category, setCategory] = useState("Все категории");
   const [completed, setCompleted] = useState<string[]>([]);
-  const [expandedModules, setExpandedModules] = useState<string[]>(modules.map((module) => module.id));
   const [practiceIndex, setPracticeIndex] = useState<number | null>(null);
   const [answerVisible, setAnswerVisible] = useState(false);
   const [visibleCount, setVisibleCount] = useState(40);
@@ -29,14 +28,6 @@ export default function Home() {
     const saved = window.localStorage.getItem("frontend-base-progress");
     if (saved) setCompleted(JSON.parse(saved));
   }, []);
-
-  const toggleComplete = (id: string) => {
-    setCompleted((current) => {
-      const next = current.includes(id) ? current.filter((item) => item !== id) : [...current, id];
-      window.localStorage.setItem("frontend-base-progress", JSON.stringify(next));
-      return next;
-    });
-  };
 
   const filteredModules = useMemo(() => {
     const value = query.trim().toLowerCase();
@@ -167,12 +158,11 @@ export default function Home() {
           {view === "topics" ? (
             <section className="space-y-3" aria-label="Темы">
               {filteredModules.map((module) => {
-                const isExpanded = expandedModules.includes(module.id);
                 const done = module.topics.filter((topic) => completed.includes(topic.id)).length;
                 return (
                   <article key={module.id} className="overflow-hidden rounded-xl border border-slate-200 bg-white">
-                    <button
-                      onClick={() => setExpandedModules((current) => current.includes(module.id) ? current.filter((id) => id !== module.id) : [...current, module.id])}
+                    <Link
+                      href={`/sections/${module.id}`}
                       className="flex w-full items-center gap-4 p-4 text-left hover:bg-slate-50 sm:p-5"
                     >
                       <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-slate-100 font-mono text-xs text-slate-500">{module.number}</span>
@@ -181,33 +171,8 @@ export default function Home() {
                         <span className="mt-0.5 block truncate text-xs text-slate-500 sm:text-sm">{module.description}</span>
                       </span>
                       <span className="text-xs text-slate-400">{done}/{module.topics.length}</span>
-                      <span className={`text-slate-400 transition ${isExpanded ? "rotate-180" : ""}`}>⌄</span>
-                    </button>
-
-                    {isExpanded && (
-                      <div className="border-t border-slate-100">
-                        {module.topics.map((topic) => {
-                          const isDone = completed.includes(topic.id);
-                          return (
-                            <div key={topic.id} className="flex items-start gap-3 border-b border-slate-100 px-4 py-3 last:border-b-0 sm:items-center sm:px-5">
-                              <button
-                                onClick={() => toggleComplete(topic.id)}
-                                aria-label={`Отметить тему ${topic.title}`}
-                                className={`mt-0.5 grid size-5 shrink-0 place-items-center rounded border text-[10px] sm:mt-0 ${isDone ? "border-emerald-500 bg-emerald-500 text-white" : "border-slate-300 text-transparent hover:border-slate-500"}`}
-                              >✓</button>
-                              <Link href={`/topics/${topic.id}`} className="min-w-0 flex-1 rounded-md outline-none focus:ring-2 focus:ring-slate-300">
-                                <p className={`text-sm font-medium hover:text-blue-700 ${isDone ? "text-slate-400 line-through" : ""}`}>{topic.title}</p>
-                                <p className="mt-0.5 text-xs leading-5 text-slate-500">{topic.description}</p>
-                              </Link>
-                              <span className={`hidden rounded-md border px-2 py-1 text-[10px] font-medium sm:inline ${levelClass(topic.level)}`}>{topic.level}</span>
-                              <Link href={`/topics/${topic.id}`} className="shrink-0 rounded-md border border-slate-200 px-2.5 py-1.5 text-xs text-slate-600 hover:bg-slate-50">
-                                Открыть
-                              </Link>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
+                      <span className="text-sm font-medium text-slate-500">Открыть →</span>
+                    </Link>
                   </article>
                 );
               })}
