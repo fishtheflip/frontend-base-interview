@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { interviewQuestions, questionCategories } from "./questions";
 
 type Level = "Основа" | "Middle" | "Senior";
 
@@ -144,6 +145,9 @@ export default function Home() {
   const [questionIndex, setQuestionIndex] = useState(0);
   const [answerVisible, setAnswerVisible] = useState(false);
   const [showPractice, setShowPractice] = useState(false);
+  const [questionCategory, setQuestionCategory] = useState("Все категории");
+  const [practiceIndex, setPracticeIndex] = useState(0);
+  const [visibleQuestionCount, setVisibleQuestionCount] = useState(24);
 
   useEffect(() => {
     const saved = window.localStorage.getItem("frontend-base-progress");
@@ -176,6 +180,19 @@ export default function Home() {
       .filter((module) => module.topics.length > 0);
   }, [query, level]);
 
+  const filteredQuestions = useMemo(() => {
+    const normalized = query.trim().toLowerCase();
+    return interviewQuestions.filter((item) => {
+      const matchesCategory = questionCategory === "Все категории" || item.category === questionCategory;
+      const matchesLevel = level === "Все" || (level === "Основа" ? item.level === "Junior" : item.level === level);
+      const matchesQuery =
+        !normalized ||
+        item.question.toLowerCase().includes(normalized) ||
+        item.category.toLowerCase().includes(normalized);
+      return matchesCategory && matchesLevel && matchesQuery;
+    });
+  }, [query, level, questionCategory]);
+
   const progress = Math.round((completed.length / allTopics.length) * 100);
   const nextTopic = allTopics.find((topic) => !completed.includes(topic.id)) ?? allTopics[0];
   const totalMinutes = allTopics.reduce((sum, topic) => sum + topic.minutes, 0);
@@ -196,6 +213,7 @@ export default function Home() {
 
         <nav className="main-nav" aria-label="Основная навигация">
           <a className="nav-link active" href="#modules"><span>⌂</span> База знаний</a>
+          <a className="nav-link" href="#questions"><span>?</span> Все вопросы</a>
           <button className="nav-link" onClick={() => setShowPractice(true)}><span>◎</span> Практика</button>
           <a className="nav-link" href="#plan"><span>✓</span> Мой прогресс</a>
         </nav>
@@ -263,7 +281,7 @@ export default function Home() {
           <section className="stats" aria-label="Статистика базы">
             <div><strong>{modules.length}</strong><span>направлений</span></div>
             <div><strong>{allTopics.length}</strong><span>ключевых тем</span></div>
-            <div><strong>{allTopics.reduce((sum, topic) => sum + topic.questions.length, 0)}+</strong><span>вопросов</span></div>
+            <div><strong>{interviewQuestions.length}</strong><span>вопросов</span></div>
             <div><strong>{Math.round(totalMinutes / 60)}</strong><span>часов материала</span></div>
           </section>
 
@@ -326,6 +344,57 @@ export default function Home() {
               </div>
             )}
           </section>
+
+          <section className="question-bank" id="questions">
+            <div className="question-bank-head">
+              <div>
+                <p className="eyebrow">ИНТЕРВЬЮ-БАНК</p>
+                <h2>{interviewQuestions.length} вопросов, которые действительно задают</h2>
+                <p>От короткой проверки базы до глубокого архитектурного разговора. Отвечай вслух и всегда называй практический пример и trade-off.</p>
+              </div>
+              <button onClick={() => setShowPractice(true)}>Случайный вопрос <span>↗</span></button>
+            </div>
+
+            <div className="category-strip" aria-label="Категория вопросов">
+              {["Все категории", ...questionCategories].map((category) => (
+                <button
+                  key={category}
+                  className={questionCategory === category ? "active" : ""}
+                  onClick={() => { setQuestionCategory(category); setVisibleQuestionCount(24); }}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+
+            <div className="question-summary">
+              <span>Найдено: <b>{filteredQuestions.length}</b></span>
+              <span className="difficulty-key"><i className="junior-dot" /> Junior <i className="middle-dot" /> Middle <i className="senior-dot" /> Senior</span>
+            </div>
+
+            <div className="question-grid">
+              {filteredQuestions.slice(0, visibleQuestionCount).map((item, index) => (
+                <article className="question-card" key={item.id}>
+                  <div className="question-card-meta">
+                    <span>{String(index + 1).padStart(2, "0")}</span>
+                    <span className={`question-level ${item.level.toLowerCase()}`}>{item.level}</span>
+                  </div>
+                  <h3>{item.question}</h3>
+                  <p>{item.category}</p>
+                  <button onClick={() => {
+                    setPracticeIndex(interviewQuestions.findIndex((question) => question.id === item.id));
+                    setShowPractice(true);
+                  }}>Ответить в режиме практики →</button>
+                </article>
+              ))}
+            </div>
+
+            {visibleQuestionCount < filteredQuestions.length && (
+              <button className="load-more" onClick={() => setVisibleQuestionCount((count) => count + 24)}>
+                Показать ещё 24 вопроса
+              </button>
+            )}
+          </section>
         </div>
       </section>
 
@@ -373,10 +442,21 @@ export default function Home() {
             <p className="modal-kicker">РЕЖИМ ПРАКТИКИ</p>
             <h2 id="practice-title">Проверь себя без подсказок</h2>
             <p>Случайный вопрос из всей базы. Сформулируй ответ вслух за 2–3 минуты, как на настоящем интервью.</p>
-            <div className="practice-question">
-              {allTopics[Math.floor((questionIndex * 7 + 3) % allTopics.length)].questions[questionIndex % 3]}
+            <div className="practice-meta">
+              <span>{interviewQuestions[practiceIndex % interviewQuestions.length].category}</span>
+              <span>{interviewQuestions[practiceIndex % interviewQuestions.length].level}</span>
             </div>
-            <button className="practice-next" onClick={() => setQuestionIndex((current) => current + 1)}>Другой вопрос →</button>
+            <div className="practice-question">
+              {interviewQuestions[practiceIndex % interviewQuestions.length].question}
+            </div>
+            <div className="answer-formula">
+              <strong>Формула сильного ответа</strong>
+              <span>Определение → механизм → пример → ограничения → trade-off</span>
+            </div>
+            <button
+              className="practice-next"
+              onClick={() => setPracticeIndex((current) => (current * 73 + 41) % interviewQuestions.length)}
+            >Другой вопрос →</button>
           </article>
         </div>
       )}
