@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { allTopics, modules, type Level } from "./topics";
 import { interviewQuestions, questionCategories } from "./questions";
 import { getAnswer } from "./answers";
@@ -194,18 +195,14 @@ export default function Home() {
                                 aria-label={`Отметить тему ${topic.title}`}
                                 className={`mt-0.5 grid size-5 shrink-0 place-items-center rounded border text-[10px] sm:mt-0 ${isDone ? "border-emerald-500 bg-emerald-500 text-white" : "border-slate-300 text-transparent hover:border-slate-500"}`}
                               >✓</button>
-                              <div className="min-w-0 flex-1">
-                                <p className={`text-sm font-medium ${isDone ? "text-slate-400 line-through" : ""}`}>{topic.title}</p>
+                              <Link href={`/topics/${topic.id}`} className="min-w-0 flex-1 rounded-md outline-none focus:ring-2 focus:ring-slate-300">
+                                <p className={`text-sm font-medium hover:text-blue-700 ${isDone ? "text-slate-400 line-through" : ""}`}>{topic.title}</p>
                                 <p className="mt-0.5 text-xs leading-5 text-slate-500">{topic.description}</p>
-                              </div>
+                              </Link>
                               <span className={`hidden rounded-md border px-2 py-1 text-[10px] font-medium sm:inline ${levelClass(topic.level)}`}>{topic.level}</span>
-                              <button
-                                onClick={() => {
-                                  const question = interviewQuestions.findIndex((item) => item.category.toLowerCase().includes(module.title.split(" ")[0].toLowerCase()));
-                                  openQuestion(question >= 0 ? question : Math.floor(Math.random() * interviewQuestions.length));
-                                }}
-                                className="shrink-0 rounded-md border border-slate-200 px-2.5 py-1.5 text-xs text-slate-600 hover:bg-slate-50"
-                              >Вопрос</button>
+                              <Link href={`/topics/${topic.id}`} className="shrink-0 rounded-md border border-slate-200 px-2.5 py-1.5 text-xs text-slate-600 hover:bg-slate-50">
+                                Открыть
+                              </Link>
                             </div>
                           );
                         })}
