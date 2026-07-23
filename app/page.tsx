@@ -22,6 +22,7 @@ export default function Home() {
   const [completed, setCompleted] = useState<string[]>([]);
   const [practiceIndex, setPracticeIndex] = useState<number | null>(null);
   const [answerVisible, setAnswerVisible] = useState(false);
+  const [topicsPage, setTopicsPage] = useState(1);
   const [questionsPage, setQuestionsPage] = useState(1);
 
   useEffect(() => {
@@ -54,8 +55,15 @@ export default function Home() {
   }, [query, level, category]);
 
   useEffect(() => {
+    setTopicsPage(1);
     setQuestionsPage(1);
   }, [query, level, category]);
+
+  const sectionsPerPage = 4;
+  const topicsPages = Math.max(1, Math.ceil(filteredModules.length / sectionsPerPage));
+  const currentTopicsPage = Math.min(topicsPage, topicsPages);
+  const topicsPageStart = (currentTopicsPage - 1) * sectionsPerPage;
+  const paginatedModules = filteredModules.slice(topicsPageStart, topicsPageStart + sectionsPerPage);
 
   const questionsPerPage = 20;
   const questionsPages = Math.max(1, Math.ceil(filteredQuestions.length / questionsPerPage));
@@ -167,7 +175,7 @@ export default function Home() {
 
           {view === "topics" ? (
             <section className="space-y-3" aria-label="Темы">
-              {filteredModules.map((module) => {
+              {paginatedModules.map((module) => {
                 const done = module.topics.filter((topic) => completed.includes(topic.id)).length;
                 return (
                   <article key={module.id} className="overflow-hidden rounded-xl border border-slate-200 bg-white">
@@ -192,6 +200,35 @@ export default function Home() {
                   <p className="font-medium">Темы не найдены</p>
                   <button onClick={() => { setQuery(""); setLevel("Все"); }} className="mt-2 text-sm text-blue-600 hover:underline">Сбросить фильтры</button>
                 </div>
+              )}
+
+              {filteredModules.length > sectionsPerPage && (
+                <nav className="flex items-center justify-center gap-2 pt-2" aria-label="Пагинация тем">
+                  <button
+                    onClick={() => setTopicsPage((page) => Math.max(1, page - 1))}
+                    disabled={currentTopicsPage === 1}
+                    className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    ← Назад
+                  </button>
+                  {Array.from({ length: topicsPages }, (_, index) => index + 1).map((page) => (
+                    <button
+                      key={page}
+                      onClick={() => setTopicsPage(page)}
+                      aria-current={page === currentTopicsPage ? "page" : undefined}
+                      className={`size-10 rounded-lg border text-sm font-medium ${page === currentTopicsPage ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 bg-white hover:bg-slate-50"}`}
+                    >
+                      {page}
+                    </button>
+                  ))}
+                  <button
+                    onClick={() => setTopicsPage((page) => Math.min(topicsPages, page + 1))}
+                    disabled={currentTopicsPage === topicsPages}
+                    className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    Вперёд →
+                  </button>
+                </nav>
               )}
             </section>
           ) : (
