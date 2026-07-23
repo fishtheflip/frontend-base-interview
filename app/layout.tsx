@@ -4,22 +4,22 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL("https://frontend-base-interview.ataflava.chatgpt.site"),
   title: "Frontend Base — база подготовки",
-  description: "540 вопросов с подробными ответами для подготовки к frontend-собеседованию.",
+  description: "685 вопросов с подробными ответами, включая React, Angular, Vue и Redux.",
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",
   },
   openGraph: {
     title: "Frontend Base — база подготовки",
-    description: "540 вопросов с подробными ответами для подготовки к frontend-собеседованию.",
-    images: [{ url: "/og.png", width: 1536, height: 1024, alt: "Frontend Base — 540 вопросов для собеседования" }],
+    description: "685 вопросов с подробными ответами, включая React, Angular, Vue и Redux.",
+    images: [{ url: "/og-frameworks.png", width: 1536, height: 1024, alt: "Frontend Base — 685 вопросов с ответами" }],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "Frontend Base — база подготовки",
-    description: "540 вопросов с подробными ответами для подготовки к frontend-собеседованию.",
-    images: ["/og.png"],
+    description: "685 вопросов с подробными ответами, включая React, Angular, Vue и Redux.",
+    images: ["/og-frameworks.png"],
   },
 };
 
