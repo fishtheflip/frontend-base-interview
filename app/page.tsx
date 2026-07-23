@@ -242,18 +242,6 @@ export default function Home() {
               <button onClick={() => setPracticeIndex(null)} className="grid size-8 shrink-0 place-items-center rounded-lg text-xl text-slate-400 hover:bg-slate-100 hover:text-slate-700" aria-label="Закрыть">×</button>
             </div>
 
-            <div className="my-6 rounded-xl border border-slate-200 bg-slate-50 p-4">
-              <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Структура ответа</p>
-              <ol className="grid gap-2 text-sm text-slate-700 sm:grid-cols-5">
-                {["Определение", "Механизм", "Пример", "Ограничения", "Trade-off"].map((item, index) => (
-                  <li key={item} className="flex items-center gap-2 sm:block">
-                    <span className="mr-1 inline-grid size-5 place-items-center rounded-full bg-white text-[10px] font-semibold text-slate-500 ring-1 ring-slate-200">{index + 1}</span>
-                    {item}
-                  </li>
-                ))}
-              </ol>
-            </div>
-
             {answerVisible && currentAnswer ? (
               <section className="mb-6 overflow-hidden rounded-xl border border-emerald-200 bg-emerald-50/50" aria-label="Ответ">
                 <div className="border-b border-emerald-200 bg-emerald-100/60 px-4 py-3">
