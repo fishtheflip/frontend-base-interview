@@ -22,7 +22,7 @@ export default function Home() {
   const [completed, setCompleted] = useState<string[]>([]);
   const [practiceIndex, setPracticeIndex] = useState<number | null>(null);
   const [answerVisible, setAnswerVisible] = useState(false);
-  const [visibleCount, setVisibleCount] = useState(40);
+  const [questionsPage, setQuestionsPage] = useState(1);
 
   useEffect(() => {
     const saved = window.localStorage.getItem("frontend-base-progress");
@@ -52,6 +52,16 @@ export default function Home() {
       return matchesCategory && matchesLevel && matchesQuery;
     });
   }, [query, level, category]);
+
+  useEffect(() => {
+    setQuestionsPage(1);
+  }, [query, level, category]);
+
+  const questionsPerPage = 20;
+  const questionsPages = Math.max(1, Math.ceil(filteredQuestions.length / questionsPerPage));
+  const currentQuestionsPage = Math.min(questionsPage, questionsPages);
+  const questionsPageStart = (currentQuestionsPage - 1) * questionsPerPage;
+  const paginatedQuestions = filteredQuestions.slice(questionsPageStart, questionsPageStart + questionsPerPage);
 
   const progress = Math.round((completed.length / allTopics.length) * 100);
   const currentQuestion = practiceIndex === null ? null : interviewQuestions[practiceIndex % interviewQuestions.length];
@@ -190,7 +200,7 @@ export default function Home() {
                 {["Все категории", ...questionCategories].map((item) => (
                   <button
                     key={item}
-                    onClick={() => { setCategory(item); setVisibleCount(40); }}
+                    onClick={() => setCategory(item)}
                     className={`shrink-0 rounded-full border px-3 py-1.5 text-xs ${category === item ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 bg-white text-slate-600 hover:border-slate-300"}`}
                   >
                     {item}
@@ -204,13 +214,13 @@ export default function Home() {
               </div>
 
               <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
-                {filteredQuestions.slice(0, visibleCount).map((item, index) => (
+                {paginatedQuestions.map((item, index) => (
                   <button
                     key={item.id}
                     onClick={() => openQuestion(interviewQuestions.findIndex((question) => question.id === item.id))}
                     className="grid w-full grid-cols-[32px_minmax(0,1fr)] gap-3 border-b border-slate-100 px-4 py-3 text-left last:border-b-0 hover:bg-slate-50 sm:grid-cols-[40px_minmax(0,1fr)_auto_auto] sm:items-center sm:px-5"
                   >
-                    <span className="font-mono text-xs text-slate-400">{String(index + 1).padStart(2, "0")}</span>
+                    <span className="font-mono text-xs text-slate-400">{String(questionsPageStart + index + 1).padStart(2, "0")}</span>
                     <span className="text-sm font-medium leading-5">{item.question}</span>
                     <span className="hidden text-xs text-slate-400 sm:block">{item.category}</span>
                     <span className={`hidden rounded-md border px-2 py-1 text-[10px] font-medium sm:block ${levelClass(item.level)}`}>{item.level}</span>
@@ -218,10 +228,37 @@ export default function Home() {
                 ))}
               </div>
 
-              {visibleCount < filteredQuestions.length && (
-                <button onClick={() => setVisibleCount((count) => count + 40)} className="mx-auto mt-5 block rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium hover:bg-slate-50">
-                  Показать ещё
-                </button>
+              {filteredQuestions.length > questionsPerPage && (
+                <nav className="mt-5 flex flex-wrap items-center justify-center gap-2" aria-label="Пагинация вопросов">
+                  <button
+                    onClick={() => setQuestionsPage((page) => Math.max(1, page - 1))}
+                    disabled={currentQuestionsPage === 1}
+                    className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    ← Назад
+                  </button>
+                  {Array.from({ length: questionsPages }, (_, index) => index + 1)
+                    .filter((page) => page === 1 || page === questionsPages || Math.abs(page - currentQuestionsPage) <= 2)
+                    .map((page, index, pages) => (
+                      <span key={page} className="contents">
+                        {index > 0 && page - pages[index - 1] > 1 && <span className="px-1 text-slate-400">…</span>}
+                        <button
+                          onClick={() => setQuestionsPage(page)}
+                          aria-current={page === currentQuestionsPage ? "page" : undefined}
+                          className={`size-10 rounded-lg border text-sm font-medium ${page === currentQuestionsPage ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 bg-white hover:bg-slate-50"}`}
+                        >
+                          {page}
+                        </button>
+                      </span>
+                    ))}
+                  <button
+                    onClick={() => setQuestionsPage((page) => Math.min(questionsPages, page + 1))}
+                    disabled={currentQuestionsPage === questionsPages}
+                    className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    Вперёд →
+                  </button>
+                </nav>
               )}
             </section>
           )}
