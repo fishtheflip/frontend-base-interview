@@ -31,18 +31,16 @@ export default function Home() {
   }, []);
 
   const filteredModules = useMemo(() => {
-    const value = query.trim().toLowerCase();
     return modules
       .map((module) => ({
         ...module,
         topics: module.topics.filter((topic) => {
           const matchesLevel = level === "Все" || topic.level === level;
-          const matchesQuery = !value || `${module.title} ${topic.title} ${topic.description}`.toLowerCase().includes(value);
-          return matchesLevel && matchesQuery;
+          return matchesLevel;
         }),
       }))
       .filter((module) => module.topics.length > 0);
-  }, [query, level]);
+  }, [level]);
 
   const filteredQuestions = useMemo(() => {
     const value = query.trim().toLowerCase();
@@ -89,19 +87,9 @@ export default function Home() {
             <span>Frontend Base</span>
           </a>
 
-          <div className="relative ml-auto w-full max-w-xl">
-            <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">⌕</span>
-            <input
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="Поиск по темам и вопросам"
-              className="h-10 w-full rounded-lg border border-slate-200 bg-slate-50 pl-9 pr-3 text-sm outline-none transition focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-100"
-            />
-          </div>
-
           <button
             onClick={() => openQuestion(Math.floor(Math.random() * interviewQuestions.length))}
-            className="hidden h-10 shrink-0 items-center rounded-lg bg-slate-950 px-4 text-sm font-medium text-white hover:bg-slate-800 sm:flex"
+            className="ml-auto hidden h-10 shrink-0 items-center rounded-lg bg-slate-950 px-4 text-sm font-medium text-white hover:bg-slate-800 sm:flex"
           >
             Практика
           </button>
@@ -233,6 +221,16 @@ export default function Home() {
             </section>
           ) : (
             <section aria-label="Вопросы">
+              <div className="relative mb-4 w-full max-w-xl">
+                <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">⌕</span>
+                <input
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  placeholder="Поиск по вопросам"
+                  aria-label="Поиск по вопросам"
+                  className="h-10 w-full rounded-lg border border-slate-200 bg-white pl-9 pr-3 text-sm outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
+                />
+              </div>
               <div className="mb-4 flex gap-2 overflow-x-auto pb-2">
                 {["Все категории", ...questionCategories].map((item) => (
                   <button
