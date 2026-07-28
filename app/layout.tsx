@@ -29,7 +29,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{const t=localStorage.getItem("frontend-base-theme");if(t==="dark"||(!t&&matchMedia("(prefers-color-scheme: dark)").matches))document.documentElement.classList.add("dark")}catch{}`,
+            __html: `try{if(localStorage.getItem("frontend-base-theme")!=="light")document.documentElement.classList.add("dark")}catch{document.documentElement.classList.add("dark")}`,
           }}
         />
       </head>

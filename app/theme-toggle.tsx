@@ -9,7 +9,7 @@ export default function ThemeToggle() {
 
   useEffect(() => {
     const saved = window.localStorage.getItem(storageKey);
-    const enabled = saved ? saved === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const enabled = saved !== "light";
     setDark(enabled);
     document.documentElement.classList.toggle("dark", enabled);
   }, []);
