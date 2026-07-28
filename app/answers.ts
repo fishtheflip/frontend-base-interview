@@ -299,6 +299,18 @@ const categoryDefaults: Record<string, InterviewAnswer> = {
     example: "@defer отделяет lazy block, incremental hydration активирует его по interaction.",
     caveat: "Избегайте shared request state на сервере и bypass sanitization без доказанной необходимости.",
   },
+  Nuxt: {
+    short: "Разберите вопрос через rendering mode Nuxt, границу server/client, lifecycle данных и возможности Nitro.",
+    points: ["Уточните, где выполняется код: build, server request или browser hydration.", "Объясните передачу payload, кэширование, безопасность runtime config и влияние решения на SEO и производительность."],
+    example: "useAsyncData выполняет запрос на сервере, сериализует результат в payload и переиспользует его во время hydration без повторного запроса.",
+    caveat: "Код SSR выполняется для разных пользователей: нельзя хранить request-specific state в общем module-level singleton.",
+  },
+  NestJS: {
+    short: "Объясните роль элемента в request lifecycle NestJS, его DI scope и границу ответственности между transport, application и domain logic.",
+    points: ["Назовите порядок выполнения middleware, guards, interceptors, pipes и filters.", "Покажите, как зависимости регистрируются в module и как решение тестируется через TestingModule."],
+    example: "Guard проверяет право выполнить действие, ValidationPipe валидирует DTO, service реализует use case, а interceptor добавляет cross-cutting поведение.",
+    caveat: "Декораторы и DI не заменяют архитектурные границы; controllers должны оставаться тонкими, а authorization проверяться на уровне каждого ресурса.",
+  },
   "Redux и Redux Toolkit": {
     short: "Redux моделирует события actions и чистое вычисление state reducers; Redux Toolkit предоставляет рекомендуемые abstractions, Immer, middleware и RTK Query.",
     points: ["Разделите client domain state, derived data и server cache.", "Покажите serializability, selector memoization и side-effect boundary."],
