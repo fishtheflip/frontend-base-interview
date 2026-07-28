@@ -14,6 +14,37 @@ function levelClass(level: string) {
   return "border-slate-200 bg-slate-50 text-slate-600";
 }
 
+const levelVisuals = {
+  Все: {
+    filter: "bg-slate-900 text-white",
+    card: "border-slate-200 bg-white",
+    number: "bg-slate-100 text-slate-500",
+    badge: "border-slate-200 bg-slate-100 text-slate-700",
+    dot: "bg-slate-500",
+  },
+  Основа: {
+    filter: "bg-emerald-600 text-white shadow-sm shadow-emerald-200",
+    card: "border-emerald-200 bg-emerald-50/50 ring-1 ring-emerald-100",
+    number: "bg-emerald-100 text-emerald-700",
+    badge: "border-emerald-200 bg-emerald-100 text-emerald-800",
+    dot: "bg-emerald-500",
+  },
+  Middle: {
+    filter: "bg-blue-600 text-white shadow-sm shadow-blue-200",
+    card: "border-blue-200 bg-blue-50/50 ring-1 ring-blue-100",
+    number: "bg-blue-100 text-blue-700",
+    badge: "border-blue-200 bg-blue-100 text-blue-800",
+    dot: "bg-blue-500",
+  },
+  Senior: {
+    filter: "bg-violet-600 text-white shadow-sm shadow-violet-200",
+    card: "border-violet-200 bg-violet-50/50 ring-1 ring-violet-100",
+    number: "bg-violet-100 text-violet-700",
+    badge: "border-violet-200 bg-violet-100 text-violet-800",
+    dot: "bg-violet-500",
+  },
+} as const;
+
 export default function Home() {
   const [view, setView] = useState<"topics" | "questions">("topics");
   const [query, setQuery] = useState("");
@@ -62,6 +93,8 @@ export default function Home() {
   const currentTopicsPage = Math.min(topicsPage, topicsPages);
   const topicsPageStart = (currentTopicsPage - 1) * sectionsPerPage;
   const paginatedModules = filteredModules.slice(topicsPageStart, topicsPageStart + sectionsPerPage);
+  const filteredTopicsCount = filteredModules.reduce((count, module) => count + module.topics.length, 0);
+  const activeLevelVisual = levelVisuals[level];
 
   const questionsPerPage = 20;
   const questionsPages = Math.max(1, Math.ceil(filteredQuestions.length / questionsPerPage));
@@ -131,8 +164,9 @@ export default function Home() {
                 <button
                   key={option}
                   onClick={() => setLevel(option)}
-                  className={`rounded-lg px-3 py-2 text-left text-sm ${level === option ? "bg-slate-100 font-medium text-slate-950" : "text-slate-600 hover:bg-slate-50"}`}
+                  className={`flex items-center gap-2 rounded-lg px-3 py-2 text-left text-sm transition ${level === option ? `${levelVisuals[option].filter} font-medium` : "text-slate-600 hover:bg-slate-50"}`}
                 >
+                  <span className={`size-2 rounded-full ${level === option ? "bg-white/80" : levelVisuals[option].dot}`} />
                   {option}
                 </button>
               ))}
@@ -153,7 +187,7 @@ export default function Home() {
                 <button
                   key={option}
                   onClick={() => setLevel(option)}
-                  className={`rounded-md border px-2.5 py-1.5 text-xs ${level === option ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 bg-white text-slate-600"}`}
+                  className={`rounded-md border px-2.5 py-1.5 text-xs transition ${level === option ? `border-transparent ${levelVisuals[option].filter}` : "border-slate-200 bg-white text-slate-600"}`}
                 >
                   {option}
                 </button>
@@ -163,18 +197,40 @@ export default function Home() {
 
           {view === "topics" ? (
             <section className="space-y-3" aria-label="Темы">
+              <div className={`mb-4 flex flex-col gap-3 rounded-xl border p-4 sm:flex-row sm:items-center sm:justify-between ${activeLevelVisual.card}`}>
+                <div className="flex items-center gap-3">
+                  <span className={`size-3 shrink-0 rounded-full ${activeLevelVisual.dot}`} />
+                  <div>
+                    <p className="text-sm font-semibold">
+                      {level === "Все" ? "Показаны все уровни" : `Выбран уровень: ${level}`}
+                    </p>
+                    <p className="mt-0.5 text-xs text-slate-500">
+                      {filteredTopicsCount} тем в {filteredModules.length} разделах
+                    </p>
+                  </div>
+                </div>
+                {level !== "Все" && (
+                  <button onClick={() => setLevel("Все")} className="w-fit text-xs font-medium text-slate-600 underline-offset-4 hover:underline">
+                    Сбросить уровень
+                  </button>
+                )}
+              </div>
+
               {paginatedModules.map((module) => {
                 const done = module.topics.filter((topic) => completed.includes(topic.id)).length;
                 return (
-                  <article key={module.id} className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+                  <article key={module.id} className={`overflow-hidden rounded-xl border transition ${activeLevelVisual.card}`}>
                     <Link
                       href={`/sections/${module.id}`}
-                      className="flex w-full items-center gap-4 p-4 text-left hover:bg-slate-50 sm:p-5"
+                      className="flex w-full items-center gap-4 p-4 text-left hover:bg-white/60 sm:p-5"
                     >
-                      <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-slate-100 font-mono text-xs text-slate-500">{module.number}</span>
+                      <span className={`grid size-9 shrink-0 place-items-center rounded-lg font-mono text-xs ${activeLevelVisual.number}`}>{module.number}</span>
                       <span className="min-w-0 flex-1">
                         <strong className="block text-sm font-semibold sm:text-base">{module.title}</strong>
                         <span className="mt-0.5 block truncate text-xs text-slate-500 sm:text-sm">{module.description}</span>
+                      </span>
+                      <span className={`hidden rounded-full border px-2.5 py-1 text-[11px] font-medium sm:inline ${activeLevelVisual.badge}`}>
+                        {level === "Все" ? `${module.topics.length} тем` : `${module.topics.length} · ${level}`}
                       </span>
                       <span className="text-xs text-slate-400">{done}/{module.topics.length}</span>
                       <span className="text-sm font-medium text-slate-500">Открыть →</span>
