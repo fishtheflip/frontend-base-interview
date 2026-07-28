@@ -317,6 +317,12 @@ const categoryDefaults: Record<string, InterviewAnswer> = {
     example: "Документация генерируется через SSG и CDN, каталог использует ISR с on-demand invalidation, личный кабинет — SSR или CSR с приватным API.",
     caveat: "SSR не гарантирует быстрый интерфейс: медленный data source повышает TTFB, а тяжёлая hydration всё равно блокирует интерактивность.",
   },
+  "Node.js: основы": {
+    short: "Node.js — JavaScript runtime на базе V8, который предоставляет серверные API и использует libuv для Event Loop и неблокирующего ввода-вывода.",
+    points: ["Разделяйте выполнение JavaScript на основном потоке и асинхронный I/O, обслуживаемый runtime.", "Покажите практический API Node.js, обработку ошибок и влияние синхронной работы на Event Loop."],
+    example: "HTTP-сервер принимает request, ожидает асинхронные данные и завершает response; тяжёлое синхронное вычисление между этими шагами блокирует другие запросы.",
+    caveat: "Однопоточное выполнение JavaScript не означает, что весь Node.js однопоточен: I/O, worker pool и worker_threads используют дополнительные потоки.",
+  },
   "Redux и Redux Toolkit": {
     short: "Redux моделирует события actions и чистое вычисление state reducers; Redux Toolkit предоставляет рекомендуемые abstractions, Immer, middleware и RTK Query.",
     points: ["Разделите client domain state, derived data и server cache.", "Покажите serializability, selector memoization и side-effect boundary."],
