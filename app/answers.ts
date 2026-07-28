@@ -311,6 +311,12 @@ const categoryDefaults: Record<string, InterviewAnswer> = {
     example: "Guard проверяет право выполнить действие, ValidationPipe валидирует DTO, service реализует use case, а interceptor добавляет cross-cutting поведение.",
     caveat: "Декораторы и DI не заменяют архитектурные границы; controllers должны оставаться тонкими, а authorization проверяться на уровне каждого ресурса.",
   },
+  "Рендеринг: CSR, SSR, SSG и ISR": {
+    short: "Стратегию рендеринга выбирают по свежести и персонализации данных, требованиям SEO, допустимому TTFB, стоимости серверов и объёму клиентского JavaScript.",
+    points: ["Укажите, когда создаётся HTML: во время build, по запросу, при revalidation или только в браузере.", "Разберите cache policy, передачу данных, hydration, failure mode и возможность выбирать стратегию отдельно для каждого маршрута."],
+    example: "Документация генерируется через SSG и CDN, каталог использует ISR с on-demand invalidation, личный кабинет — SSR или CSR с приватным API.",
+    caveat: "SSR не гарантирует быстрый интерфейс: медленный data source повышает TTFB, а тяжёлая hydration всё равно блокирует интерактивность.",
+  },
   "Redux и Redux Toolkit": {
     short: "Redux моделирует события actions и чистое вычисление state reducers; Redux Toolkit предоставляет рекомендуемые abstractions, Immer, middleware и RTK Query.",
     points: ["Разделите client domain state, derived data и server cache.", "Покажите serializability, selector memoization и side-effect boundary."],
