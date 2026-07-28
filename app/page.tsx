@@ -5,6 +5,7 @@ import Link from "next/link";
 import { allTopics, modules, type Level } from "./topics";
 import { interviewQuestions, questionCategories } from "./questions";
 import { getAnswer } from "./answers";
+import ThemeToggle from "./theme-toggle";
 
 const levelOptions: Array<"Все" | Level> = ["Все", "Основа", "Middle", "Senior"];
 
@@ -126,6 +127,7 @@ export default function Home() {
           >
             Практика
           </button>
+          <ThemeToggle />
         </div>
       </header>
 

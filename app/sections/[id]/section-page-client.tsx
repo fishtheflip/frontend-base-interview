@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getAnswer } from "../../answers";
 import { interviewQuestions, type InterviewQuestion } from "../../questions";
 import type { Module } from "../../topics";
+import ThemeToggle from "../../theme-toggle";
 
 const categoryMatchers: Record<string, RegExp> = {
   html: /HTML и доступность/,
@@ -67,7 +68,10 @@ export default function SectionPageClient({ module }: { module: Module }) {
             <span className="grid size-8 place-items-center rounded-md bg-slate-950 font-mono text-xs text-white">&lt;/&gt;</span>
             Frontend Base
           </Link>
-          <Link href="/" className="text-sm text-slate-500 hover:text-slate-950">Все разделы</Link>
+          <div className="flex items-center gap-3">
+            <Link href="/" className="text-sm text-slate-500 hover:text-slate-950">Все разделы</Link>
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 
