@@ -341,6 +341,12 @@ const categoryDefaults: Record<string, InterviewAnswer> = {
     example: "GET кэшируется с ETag, а повтор POST защищается idempotency key.",
     caveat: "Успешный HTTP status не гарантирует корректность доменного результата.",
   },
+  "Интернет и протоколы: advanced": {
+    short: "Разберите путь данных послойно: DNS и маршрутизация → IP/transport → TLS → HTTP или real-time protocol → proxy/CDN → приложение.",
+    points: ["Для каждого слоя назовите его гарантию, состояние соединения, точки кэширования и поведение при потере пакета или отказе.", "Обсудите latency, безопасность, масштабирование, backpressure, observability и конкретные trade-offs альтернатив."],
+    example: "Запрос резолвит домен через DNS, устанавливает QUIC/TLS, попадает в ближайший CDN PoP, а cache miss через origin shield уходит к load balancer и приложению.",
+    caveat: "Не смешивайте гарантии разных слоёв: TCP обеспечивает надёжный поток байтов, но не идемпотентность операции; WebSocket сохраняет соединение, но не гарантирует доставку бизнес-события.",
+  },
   Безопасность: {
     short: "Сформулируйте актив, границу доверия, способ атаки и server-side контроль, который предотвращает или ограничивает ущерб.",
     points: ["Используйте deny-by-default и проверяйте authorization для каждого объекта.", "Добавляйте defense in depth: безопасные defaults, headers, logging и monitoring."],

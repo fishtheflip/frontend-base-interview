@@ -4,21 +4,21 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL("https://fishtheflip.github.io/frontend-base-interview/"),
   title: "Frontend Base — база подготовки",
-  description: "823 вопроса с подробными ответами, включая Node.js, SSR, SSG, React, Nuxt, NestJS, Angular, Vue и Redux.",
+  description: "871 вопрос с подробными ответами, включая интернет-протоколы, Node.js, SSR, SSG, React, Nuxt и NestJS.",
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",
   },
   openGraph: {
     title: "Frontend Base — база подготовки",
-    description: "823 вопроса с подробными ответами, включая Node.js, SSR, SSG, React, Nuxt, NestJS, Angular, Vue и Redux.",
-    images: [{ url: "/og-frameworks.png", width: 1536, height: 1024, alt: "Frontend Base — 823 вопроса с ответами" }],
+    description: "871 вопрос с подробными ответами, включая интернет-протоколы, Node.js, SSR, SSG, React, Nuxt и NestJS.",
+    images: [{ url: "/og-frameworks.png", width: 1536, height: 1024, alt: "Frontend Base — 871 вопрос с ответами" }],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "Frontend Base — база подготовки",
-    description: "823 вопроса с подробными ответами, включая Node.js, SSR, SSG, React, Nuxt, NestJS, Angular, Vue и Redux.",
+    description: "871 вопрос с подробными ответами, включая интернет-протоколы, Node.js, SSR, SSG, React, Nuxt и NestJS.",
     images: ["/og-frameworks.png"],
   },
 };
