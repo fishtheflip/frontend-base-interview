@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://frontend-base-interview.ataflava.chatgpt.site"),
+  metadataBase: new URL("https://fishtheflip.github.io/frontend-base-interview/"),
   title: "Frontend Base — база подготовки",
   description: "685 вопросов с подробными ответами, включая React, Angular, Vue и Redux.",
   icons: {
