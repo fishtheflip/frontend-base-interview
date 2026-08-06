@@ -16,6 +16,7 @@ const categoryMatchers: Record<string, RegExp> = {
   browser: /Браузер|Сеть|Безопасность/,
   quality: /Тестирование|Performance|Инженерные/,
   architecture: /Архитектура|System Design|Инженерные/,
+  devops: /DevOps|CI\/CD|Docker|GitHub Actions|GitLab CI|Деплой/,
 };
 
 function levelClass(level: string) {

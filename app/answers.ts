@@ -347,6 +347,30 @@ const categoryDefaults: Record<string, InterviewAnswer> = {
     example: "Запрос резолвит домен через DNS, устанавливает QUIC/TLS, попадает в ближайший CDN PoP, а cache miss через origin shield уходит к load balancer и приложению.",
     caveat: "Не смешивайте гарантии разных слоёв: TCP обеспечивает надёжный поток байтов, но не идемпотентность операции; WebSocket сохраняет соединение, но не гарантирует доставку бизнес-события.",
   },
+  "DevOps: CI/CD": {
+    short: "CI автоматически проверяет каждое изменение, а CD доставляет один проверенный immutable artifact через контролируемые окружения до production.",
+    points: ["Опишите trigger, stages, quality gates, artifacts, environments и правила продвижения релиза.", "Объясните воспроизводимость через lockfile, фиксированный runtime, изоляцию jobs и минимальные permissions."],
+    example: "Pull request запускает lint, typecheck и tests; после merge один artifact проходит staging smoke tests и только затем получает production approval.",
+    caveat: "Повторная сборка для production может создать другой результат; продвигайте уже проверенный artifact.",
+  },
+  "DevOps: Docker": {
+    short: "Docker упаковывает приложение и его runtime в версионируемый image; container является запущенным экземпляром этого image.",
+    points: ["Разберите Dockerfile, layers, cache, multi-stage build, runtime user и healthcheck.", "Отделите build-time frontend configuration от runtime secrets и инфраструктурной конфигурации."],
+    example: "Builder stage устанавливает зависимости и создаёт static bundle, final nginx stage содержит только готовые assets и конфигурацию сервера.",
+    caveat: "Secrets, случайно попавшие в layer, остаются в истории image даже после удаления следующим RUN.",
+  },
+  "DevOps: GitHub Actions и GitLab CI": {
+    short: "Обе платформы описывают pipeline как код: события запускают jobs на runners, а cache, artifacts, secrets и environments связывают стадии доставки.",
+    points: ["Назовите модель workflow/stages, зависимости jobs, runner isolation и переиспользование конфигурации.", "Объясните protected environments, OIDC, минимальные permissions и угрозы недоверенных pull requests."],
+    example: "Matrix job тестирует поддерживаемые Node.js версии, build artifact передаётся deploy job через needs, а production защищён manual approval.",
+    caveat: "Self-hosted runner выполняет недоверенный код внутри вашей сети; его нужно изолировать и очищать между jobs.",
+  },
+  "DevOps: деплой и эксплуатация": {
+    short: "Безопасный релиз использует immutable versioned assets, совместимые API, постепенный rollout, наблюдаемость и заранее проверенный rollback или roll-forward plan.",
+    points: ["Выберите rolling, blue-green или canary по риску, стоимости и доступным сигналам здоровья.", "Покажите smoke tests, release metrics, cache strategy, audit trail и действия при деградации."],
+    example: "Canary получает 5% трафика; система сравнивает error rate, LCP и конверсию, после чего продолжает rollout или автоматически откатывает release.",
+    caveat: "Rollback frontend не поможет, если уже выполнена несовместимая database migration; изменения должны поддерживать период совместимости.",
+  },
   Безопасность: {
     short: "Сформулируйте актив, границу доверия, способ атаки и server-side контроль, который предотвращает или ограничивает ущерб.",
     points: ["Используйте deny-by-default и проверяйте authorization для каждого объекта.", "Добавляйте defense in depth: безопасные defaults, headers, logging и monitoring."],

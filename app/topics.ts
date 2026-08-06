@@ -124,6 +124,19 @@ export const modules: Module[] = [
       { id: "decisions", title: "Инженерные решения", description: "Trade-offs, ADR, оценка рисков и защита решения на интервью.", level: "Senior", minutes: 32, questions: ["Как аргументировать trade-off?", "Что входит в ADR?", "Как оценить стоимость миграции?"] },
     ],
   },
+  {
+    id: "devops",
+    number: "09",
+    title: "DevOps для frontend",
+    description: "CI/CD, Docker, автоматизация релизов и эксплуатация frontend",
+    accent: "#f59e0b",
+    topics: [
+      { id: "cicd", title: "Основы CI/CD", description: "Pipeline, quality gates, artifacts, environments и автоматизация доставки.", level: "Основа", minutes: 42, questions: ["Чем CI отличается от CD?", "Из каких стадий состоит pipeline?", "Что такое artifact?"] },
+      { id: "docker", title: "Docker для frontend", description: "Images, containers, Dockerfile, multi-stage build и nginx.", level: "Middle", minutes: 48, questions: ["Image или container?", "Зачем нужен multi-stage build?", "Как кэшируются Docker layers?"] },
+      { id: "ci-platforms", title: "GitHub Actions и GitLab CI", description: "Workflow, jobs, runners, secrets, cache и переиспользуемые pipelines.", level: "Middle", minutes: 52, questions: ["Что такое runner?", "Как передавать artifacts между jobs?", "Как защитить secrets?"] },
+      { id: "delivery", title: "Деплой и эксплуатация", description: "Preview environments, canary, rollback, observability и безопасные релизы.", level: "Senior", minutes: 55, questions: ["Blue-green или canary?", "Rollback или roll-forward?", "Какие метрики проверять после релиза?"] },
+    ],
+  },
 ];
 
 export const allTopics = modules.flatMap((module) =>
