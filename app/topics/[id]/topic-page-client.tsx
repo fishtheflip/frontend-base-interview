@@ -47,6 +47,10 @@ const topicMatchers: Record<string, RegExp> = {
   docker: /Docker|container|image|Dockerfile|layer|nginx/i,
   "ci-platforms": /GitHub Actions|GitLab CI|runner|workflow|job|secret/i,
   delivery: /депло|rollout|rollback|canary|blue-green|observability|релиз/i,
+  "api-design": /API|REST|GraphQL|контракт|версионир|status|ошиб/i,
+  "http-cache": /HTTP|Cache-Control|ETag|cookie|CORS|метод|status/i,
+  "internet-protocols": /DNS|IP|TCP|TLS|HTTP\/2|HTTP\/3|QUIC|proxy|CDN/i,
+  realtime: /WebSocket|SSE|polling|heartbeat|reconnect|backpressure|delivery/i,
 };
 
 const moduleCategories: Record<string, RegExp> = {
@@ -59,6 +63,7 @@ const moduleCategories: Record<string, RegExp> = {
   quality: /Тестирование|Performance|Инженерные/,
   architecture: /Архитектура|System Design|Инженерные/,
   devops: /DevOps|CI\/CD|Docker|GitHub Actions|GitLab CI|Деплой/,
+  api: /Сеть и HTTP|Интернет и протоколы|Frontend System Design/,
 };
 
 function questionsForTopic(topic: Topic, module: Module): InterviewQuestion[] {

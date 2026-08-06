@@ -137,6 +137,19 @@ export const modules: Module[] = [
       { id: "delivery", title: "Деплой и эксплуатация", description: "Preview environments, canary, rollback, observability и безопасные релизы.", level: "Senior", minutes: 55, questions: ["Blue-green или canary?", "Rollback или roll-forward?", "Какие метрики проверять после релиза?"] },
     ],
   },
+  {
+    id: "api",
+    number: "10",
+    title: "API, HTTP и сети",
+    description: "Проектирование API, HTTP, интернет-протоколы и real-time соединения",
+    accent: "#14b8a6",
+    topics: [
+      { id: "api-design", title: "Проектирование API", description: "REST, GraphQL, контракты, версионирование, ошибки и устойчивый клиент.", level: "Middle", minutes: 50, questions: ["Что делает API RESTful?", "REST или GraphQL?", "Как версионировать контракт?"] },
+      { id: "http-cache", title: "HTTP и кэширование", description: "Методы, статусы, headers, cookies, CORS, Cache-Control и ETag.", level: "Middle", minutes: 55, questions: ["Safe и idempotent методы?", "Как работает CORS?", "no-cache или no-store?"] },
+      { id: "internet-protocols", title: "Как работает интернет", description: "DNS, IP, TCP, TLS, HTTP/2, HTTP/3, QUIC, proxy и CDN.", level: "Senior", minutes: 65, questions: ["Как проходит пакет до сервера?", "Как работает TLS 1.3?", "Зачем нужен QUIC?"] },
+      { id: "realtime", title: "WebSocket и real-time", description: "WebSocket, SSE, polling, heartbeat, reconnect, delivery и масштабирование.", level: "Senior", minutes: 52, questions: ["WebSocket или SSE?", "Как реализовать reconnect?", "Как масштабировать соединения?"] },
+    ],
+  },
 ];
 
 export const allTopics = modules.flatMap((module) =>
